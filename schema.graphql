@@ -1,0 +1,127 @@
+type ERC20Token @entity {
+	id: ID!
+	# asAccount: Account!
+	name: String
+	symbol: String
+	decimals: Int
+	# totalSupply: ERC20Balance!
+  totalSupply: BigInt
+  game: GamePool!
+  advisorPool: Bytes
+  teamPool: Bytes
+  acccounts: [Account!]! @derivedFrom(field: "ERC20Token")
+	balances: [ERC20Balance!]! @derivedFrom(field: "token")
+  redemptions: [ERC20Redeem!]! @derivedFrom(field: "token")
+  mints: [TokenMint!]! @derivedFrom(field: "token")
+  burns: [TokenBurn!]! @derivedFrom(field: "token")
+	# approvals: [ERC20Approval!]! @derivedFrom(field: "token")
+	# transfers: [ERC20Transfer!]! @derivedFrom(field: "token")
+
+}
+
+type GamePool @entity {
+  id: ID!
+  token: ERC20Token! @derivedFrom(field: "game")
+  ERC20Redemptions: [ERC20Redeem!] @derivedFrom(field: "game")
+}
+
+type TeamPool @entity {
+  id: ID!
+}
+
+type AdvisorPool @entity {
+  id: ID!
+}
+
+type Account @entity {
+  id: ID!
+  asERC20: ERC20Token
+  ERC20Token: ERC20Token!
+  ERC20balances: [ERC20Balance!]!
+  ERC20Burns: [TokenBurn!]! @derivedFrom(field: "burner")
+  ERC20Mints: [TokenMint!]! @derivedFrom(field: "to")
+  ERC20approvalsOwner: [ERC20Approval!]!
+  ERC20approvalsSpender: [ERC20Approval!]!
+  ERC20transferFromEvent: [ERC20Transfer!]!
+  ERC20transferToEvent: [ERC20Transfer!]!
+  ERC20Redemptions: [ERC20Redeem!]! @derivedFrom(field: "account")
+}
+
+type ERC20Redeem @entity {
+  id: ID!
+  token: ERC20Token!
+  account: Account!
+  game: GamePool!
+  vehicle: BigInt
+  value: BigDecimal!
+  valueExact: BigInt!
+}
+
+type TokenMint @entity {
+  id: ID!
+  token: ERC20Token!
+  timestamp: BigInt!
+  to: Account!
+  value: BigDecimal!
+  valueExact: BigInt! # uint256
+}
+
+type TokenBurn @entity {
+  id: ID!
+  # transaction: Transaction!
+  timestamp: BigInt!
+  token: ERC20Token!
+  burner: Account!
+  value: BigDecimal!
+  valueExact: BigInt! # uint256
+}
+
+type ERC20Transfer @entity {
+  id: ID!
+  count: BigInt!
+  amount: BigInt!
+  amountPrecise: BigDecimal!
+  transaction: Transaction!
+  timestamp: BigInt!
+  token: ERC20Token!
+  from: Account!
+  fromBalance: ERC20Balance
+  to: Account!
+  toBalance: ERC20Balance
+  value: BigDecimal!
+  valueExact: BigInt!
+}
+
+
+type ERC20Balance @entity {
+  id: ID!
+  token: ERC20Token!
+  account: Account!
+  value: BigDecimal!
+  valueExact: BigInt!
+  transferFromEvent: [ERC20Transfer!]!
+  transferToEvent: [ERC20Transfer!]!
+}
+
+type Transaction @entity {
+  id: ID!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  events: [Event!]!
+}
+
+
+type ERC20Approval @entity {
+  id: ID!
+  token: ERC20Token!
+  owner: Account!
+  spender: Account!
+  value: BigDecimal!
+  valueExact: BigInt!
+}
+
+type Event @entity {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+}

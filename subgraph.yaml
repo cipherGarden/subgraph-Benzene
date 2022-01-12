@@ -1,0 +1,67 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Benzene
+    network: mainnet
+    source:
+      address: "0x6524b87960c2d573ae514fd4181777e7842435d4"
+      abi: Benzene
+      startBlock: 6178313 
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ERC20Token
+        - TokenMint
+        - TokenBurn
+        - ERC20Transfer
+        - Account
+        - ERC20Balance
+        - Transaction
+        - ERC20Approval
+        - Event
+      abis:
+        - name: Benzene
+          file: ./abis/Benzene.json
+        - name: GamePool
+          file: ./abis/GamePool.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256)
+          handler: handleMint
+        - event: Burn(indexed address,uint256)
+          handler: handleBurn
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mappings/benzene.ts
+  - kind: ethereum/contract
+    name: GamePool
+    network: mainnet
+    source:
+      address: "0x83f11770176d959B19F9cC6E2d5a051cb101bdAf"
+      abi: GamePool
+      startBlock: 6178313 
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - GamePool
+        - Redeem
+      abis:
+        - name: GamePool
+          file: ./abis/GamePool.json
+        - name: Benzene
+          file: ./abis/Benzene.json
+      eventHandlers:
+        - event: Redeem(indexed address,indexed uint256,uint256)
+          handler: handleRedeem
+        # - event: Migrated(string,string)
+        #   handler: handleMigrated
+        # - event: OwnershipTransferred(indexed address,indexed address)
+        #   handler: handleOwnershipTransferred
+      file: ./src/mappings/gamepool.ts

@@ -1,0 +1,17 @@
+{
+  "name": "benzene",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ benzene",
+    "create-local": "graph create --node http://localhost:8020/ benzene",
+    "remove-local": "graph remove --node http://localhost:8020/ benzene",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 benzene"
+  },
+  "dependencies": {
+    "@amxx/graphprotocol-utils": "^1.1.0-alpha.0",
+    "@graphprotocol/graph-cli": "0.22.3",
+    "@graphprotocol/graph-ts": "0.22.1"
+  }
+}
